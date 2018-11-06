@@ -21,8 +21,13 @@ import com.google.ar.core.Trackable
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.rendering.Renderable
+import android.support.v4.content.ContextCompat.startActivity
+import android.content.Intent
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,12 +49,19 @@ class MainActivity : AppCompatActivity() {
             onUpdate()
         }
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+        fab.setOnClickListener { view -> restart() }
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show()
+//        }
 
         initializeGallery()
+    }
+
+    private fun restart() {
+        val i = Intent(this, MainActivity::class.java)
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        startActivity(i)
     }
 
     /**
@@ -111,6 +123,7 @@ class MainActivity : AppCompatActivity() {
         val anchorNode = AnchorNode(anchor)
         val node = TransformableNode(fragment.transformationSystem)
         node.renderable = renderable
+        node.localScale = Vector3(0.2f, 0.2f, 0.2f)
         node.setParent(anchorNode)
         fragment.arSceneView.scene.addChild(anchorNode)
         node.select()
@@ -174,6 +187,12 @@ class MainActivity : AppCompatActivity() {
         igloo.setContentDescription("igloo")
         igloo.setOnClickListener({ view -> addObject(Uri.parse("igloo.sfb")) })
         gallery.addView(igloo)
+
+        val grassHoper = ImageView(this)
+        igloo.setImageResource(R.drawable.droid_thumb)
+        igloo.setContentDescription("grasshoper")
+        igloo.setOnClickListener({ view -> addObject(Uri.parse("grasshoper.sfb")) })
+        gallery.addView(grassHoper)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

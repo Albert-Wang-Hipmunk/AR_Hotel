@@ -37,7 +37,7 @@
     file: 'sampledata/models/Cabin.obj',
     name: 'Cabin',
     recenter: 'root',
-    scale: 0.0013029999999999999,
+    scale: 0.000013029999999999999,
   },
   samplers: [
     {

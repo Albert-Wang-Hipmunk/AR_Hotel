@@ -1,24 +1,24 @@
 {
   materials: [
     {
-      name: 'mat12.002',
+      name: 'Black',
       parameters: [
         {
           baseColor: null,
         },
         {
           baseColorTint: [
-            1,
-            0.92000000000000004,
-            0.23000000000000001,
+            0.074700000000000003,
+            0.083879999999999996,
+            0.089999999999999997,
             1,
           ],
         },
         {
-          metallic: 1,
+          metallic: 0,
         },
         {
-          roughness: 0.14280000000000001,
+          roughness: 1,
         },
         {
           opacity: null,
@@ -27,50 +27,24 @@
       source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
     },
     {
-      name: 'mat20.002',
+      name: 'SkyBlue',
       parameters: [
         {
           baseColor: null,
         },
         {
           baseColorTint: [
-            0.46999999999999997,
-            0.33000000000000002,
-            0.28000000000000003,
-            1,
-          ],
-        },
-        {
-          metallic: 1,
-        },
-        {
-          roughness: 0.14280000000000001,
-        },
-        {
-          opacity: null,
-        },
-      ],
-      source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
-    },
-    {
-      name: 'mat4.002',
-      parameters: [
-        {
-          baseColor: null,
-        },
-        {
-          baseColorTint: [
-            0,
-            0.73999999999999999,
             0.82999999999999996,
+            0.93200000000000005,
+            1,
             1,
           ],
         },
         {
-          metallic: 1,
+          metallic: 0,
         },
         {
-          roughness: 0.14280000000000001,
+          roughness: 1,
         },
         {
           opacity: null,
@@ -79,24 +53,50 @@
       source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
     },
     {
-      name: 'mat5.002',
+      name: 'Yellow',
       parameters: [
         {
           baseColor: null,
         },
         {
           baseColorTint: [
-            0.01,
-            0.60999999999999999,
-            0.90000000000000002,
+            1,
+            0.93666700000000003,
+            0.62,
             1,
           ],
         },
         {
-          metallic: 1,
+          metallic: 0,
         },
         {
-          roughness: 0.14280000000000001,
+          roughness: 1,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
+    },
+    {
+      name: 'Green',
+      parameters: [
+        {
+          baseColor: null,
+        },
+        {
+          baseColorTint: [
+            0.35215999999999997,
+            0.70999999999999996,
+            0.11360000000000001,
+            1,
+          ],
+        },
+        {
+          metallic: 0,
+        },
+        {
+          roughness: 1,
         },
         {
           opacity: null,
@@ -112,10 +112,10 @@
       'Orientation',
     ],
     collision: {},
-    file: 'sampledata/models/House.obj',
-    name: 'House',
+    file: 'sampledata/models/grasshoper.obj',
+    name: 'grasshoper',
     recenter: 'root',
-    scale: 0.13029999999999999,
+    scale: 0.00042960000000000003,
   },
   version: '0.52:1',
 }

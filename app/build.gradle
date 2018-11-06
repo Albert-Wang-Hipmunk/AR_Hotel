@@ -61,3 +61,8 @@ sceneform.asset('sampledata/models/igloo.obj',
         'default',
         'sampledata/models/igloo.sfa',
         'src/main/assets/igloo')
+
+sceneform.asset('sampledata/models/grasshoper.obj',
+        'default',
+        'sampledata/models/grasshoper.sfa',
+        'src/main/assets/grasshoper')
