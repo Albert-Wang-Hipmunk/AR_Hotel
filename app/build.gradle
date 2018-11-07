@@ -66,3 +66,8 @@ sceneform.asset('sampledata/models/grasshoper.obj',
         'default',
         'sampledata/models/grasshoper.sfa',
         'src/main/assets/grasshoper')
+
+sceneform.asset('sampledata/models/bug.obj',
+        'default',
+        'sampledata/models/bug.sfa',
+        'src/main/assets/bug')
