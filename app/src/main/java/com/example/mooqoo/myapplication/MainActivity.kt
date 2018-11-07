@@ -26,8 +26,7 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.rendering.Renderable
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.Intent
-
-
+import com.example.mooqoo.myapplication.Node.AnimationNode
 
 
 class MainActivity : AppCompatActivity() {
@@ -101,7 +100,6 @@ class MainActivity : AppCompatActivity() {
 
         return wasHitting != isHitting
     }
-
     private fun onUpdate() {
         val trackingChanged = updateTracking()
         if (trackingChanged) {
@@ -121,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun addNodeToScene(fragment: ArFragment, anchor: Anchor, renderable: Renderable) {
         val anchorNode = AnchorNode(anchor)
-        val node = TransformableNode(fragment.transformationSystem)
+        val node = AnimationNode(fragment.transformationSystem)
         node.renderable = renderable
         node.localScale = Vector3(0.2f, 0.2f, 0.2f)
         node.setParent(anchorNode)
