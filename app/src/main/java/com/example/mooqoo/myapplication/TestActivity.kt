@@ -36,16 +36,17 @@ class TestActivity : AppCompatActivity() {
         scene = scene_view.scene
         renderObject(Uri.parse("bug.sfb"))
 
+        setupBtn()
+
         camera = scene_view.scene.camera
+//        camera.localRotation = Quaternion(Vector3(0f, 1f, 0f), 180f)
 //        camera.localRotation = Quaternion.axisAngle(Vector3.right(), -30.0f)
     }
 
-    private fun animationRotate() {
-
-    }
-
-    private fun animationFly() {
-
+    private fun setupBtn() {
+        btn_up_down.setOnClickListener { bugNode.animateFlyUpDown() }
+        btn_rotate.setOnClickListener { bugNode.animateRotate() }
+        btn_front_back.setOnClickListener { bugNode.animateFlyFrontBack() }
     }
 
     private fun addNodeToScene(model: ModelRenderable) {
@@ -53,12 +54,12 @@ class TestActivity : AppCompatActivity() {
             bugNode = BugAnimationNode().apply {
                 setParent(scene)
                 localPosition = Vector3(0f, -0.5f, -1.5f)
-                localRotation = Quaternion(0f, 0.5f, 0f, 0f)
+//                localRotation = Quaternion(0f, 0.0f, 0f, 0f)
+                localRotation = Quaternion(Vector3(0f, 1f, 0f), 180f)
                 localScale = Vector3(0.5f, 0.5f, 0.5f)
                 name = "Bug"
                 renderable = it
             }
-            bugNode.animateFly()
             scene.addChild(bugNode)
 
         }
