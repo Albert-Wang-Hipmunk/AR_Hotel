@@ -1,5 +1,7 @@
 package com.example.mooqoo.myapplication
 
+import android.content.Intent
+import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -44,9 +46,23 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun setupBtn() {
+        btn_toggle_main.setOnClickListener { startMainActivity() }
+        btn_toggle_aug.setOnClickListener { startAugActivity() }
         btn_up_down.setOnClickListener { bugNode.animateFlyUpDown() }
         btn_rotate.setOnClickListener { bugNode.animateRotate() }
         btn_front_back.setOnClickListener { bugNode.animateFlyFrontBack() }
+    }
+
+    private fun startMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun startAugActivity() {
+        val intent = Intent(this, AugmentedImageActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun addNodeToScene(model: ModelRenderable) {

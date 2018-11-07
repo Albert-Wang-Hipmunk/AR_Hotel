@@ -12,7 +12,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 
 class BugAnimationNode : Node() {
     private val ANIMATION_DURATION = 500L
-    private val ROTATION_DURATION = 2000L
+    private val ROTATION_DURATION = 4000L
 
 //    var animator: ObjectAnimator? = null
     // TODO animation state

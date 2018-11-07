@@ -27,6 +27,8 @@ import com.google.ar.sceneform.rendering.Renderable
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.Intent
 import com.example.mooqoo.myapplication.Node.AnimationNode
+import com.google.ar.sceneform.Node
+import kotlinx.android.synthetic.main.content_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -48,12 +50,15 @@ class MainActivity : AppCompatActivity() {
             onUpdate()
         }
 
-        fab.setOnClickListener { view -> restart() }
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
-//        }
+        btn_toggle_test.setOnClickListener { startTestActivity() }
 
         initializeGallery()
+    }
+
+    private fun startTestActivity() {
+        val intent = Intent(this, TestActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun restart() {
@@ -125,6 +130,11 @@ class MainActivity : AppCompatActivity() {
         node.setParent(anchorNode)
         fragment.arSceneView.scene.addChild(anchorNode)
         node.select()
+    }
+
+    // TODO test remove node
+    private fun removeNodeFromScene(node: Node) {
+        node.setParent(null)
     }
 
     private fun placeObject(fragment: ArFragment, anchor: Anchor, model: Uri) {
