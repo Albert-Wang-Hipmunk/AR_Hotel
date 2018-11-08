@@ -94,21 +94,16 @@ class AugmentedImageActivity : AppCompatActivity() {
     }
 
     private fun placeObject(augmentedImage: AugmentedImage) {
-//        ViewRenderable.builder()
-//                .setView(this, R.layout.hipmunk_card)
-//                .build()
-//                .thenAccept {
-//                    it.view.setOnClickListener { onHipmunkCardClicked() }
-//                    addNodeToScene(arFragment, augmentedImage, it)
-//                }
-        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[0])
+        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[0], Vector3(0.3f, 0f, 0f))
+        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[1])
+        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[2], Vector3(-0.3f, 0f, 0f))
     }
 
     private fun onHipmunkCardClicked() {
         Toast.makeText(this, "hipmunk card is clicked!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun addNodeToScene(fragment: ArFragment, augmentedImage: AugmentedImage, renderable: Renderable?) {
+    private fun addNodeToScene(fragment: ArFragment, augmentedImage: AugmentedImage, renderable: Renderable?, offsetVector: Vector3 = Vector3(0f, 0f, 0f)) {
         if (renderable == null) {
             Toast.makeText(this, "renderable is null", Toast.LENGTH_SHORT).show()
             return
@@ -125,6 +120,7 @@ class AugmentedImageActivity : AppCompatActivity() {
         node.setParent(anchorNode)
         node.renderable = renderable
         node.worldScale = Vector3(0.2f, 0.2f, 0.2f)
+        node.localPosition = offsetVector
         augmentedImageMap.put(augmentedImage, node)
 //        node.select()
     }
