@@ -48,6 +48,10 @@ class TestActivity : AppCompatActivity() {
     private fun setupBtn() {
         btn_toggle_main.setOnClickListener { startMainActivity() }
         btn_toggle_aug.setOnClickListener { startAugActivity() }
+
+        btn_stand_pose.setOnClickListener { bugNode.animateIdle() }
+        btn_random_translate.setOnClickListener { bugNode.animateRandomXYZ() }
+        btn_other.setOnClickListener { bugNode.animateInfiniteIdle(this) }
         btn_up_down.setOnClickListener { bugNode.animateFlyUpDown() }
         btn_rotate.setOnClickListener { bugNode.animateRotate() }
         btn_front_back.setOnClickListener { bugNode.animateFlyFrontBack() }

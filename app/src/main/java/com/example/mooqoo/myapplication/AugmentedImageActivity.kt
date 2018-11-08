@@ -94,20 +94,26 @@ class AugmentedImageActivity : AppCompatActivity() {
     }
 
     private fun placeObject(augmentedImage: AugmentedImage) {
-        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[0], Vector3(0.3f, 0f, 0f))
-        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[1])
-        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[2], Vector3(-0.3f, 0f, 0f))
+        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[0], Vector3(0.3f, 0f, 0.2f))?.animateIdle()//?.animateOrbit()
+        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[1])//?.animateOrbit()
+        addNodeToScene(arFragment, augmentedImage, hipmunkRenerableList[2], Vector3(-0.3f, 0f, 0.2f))?.animateIdle(3000L)//?.animateOrbit()
     }
 
     private fun onHipmunkCardClicked() {
         Toast.makeText(this, "hipmunk card is clicked!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun addNodeToScene(fragment: ArFragment, augmentedImage: AugmentedImage, renderable: Renderable?, offsetVector: Vector3 = Vector3(0f, 0f, 0f)) {
+    private fun addNodeToScene(
+            fragment: ArFragment,
+            augmentedImage: AugmentedImage,
+            renderable: Renderable?,
+            offsetVector: Vector3 = Vector3(0f, 0f, 0.2f)
+    ): BugAnimationNode? {
         if (renderable == null) {
             Toast.makeText(this, "renderable is null", Toast.LENGTH_SHORT).show()
-            return
+            return null
         }
+
         var pos = augmentedImage.centerPose
         var rotArray = pos.rotationQuaternion
         rotArray[0] = 0.0f
@@ -122,6 +128,7 @@ class AugmentedImageActivity : AppCompatActivity() {
         node.worldScale = Vector3(0.2f, 0.2f, 0.2f)
         node.localPosition = offsetVector
         augmentedImageMap.put(augmentedImage, node)
+        return node
 //        node.select()
     }
 
