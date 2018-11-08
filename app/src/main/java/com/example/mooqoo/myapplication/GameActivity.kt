@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import com.example.mooqoo.myapplication.Node.AnimationNode
 import com.example.mooqoo.myapplication.Node.BugAnimationNode
 import com.google.ar.core.Anchor
@@ -13,15 +16,24 @@ import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import kotlinx.android.synthetic.main.activity_game.*
+import java.lang.Exception
+import java.util.concurrent.CompletableFuture
 
 class GameActivity : AppCompatActivity() {
 
     lateinit var fragment: ArFragment
+
+    lateinit var bossRenderable: ModelRenderable
+    lateinit var bossCardViewRenderable: ViewRenderable
+//    lateinit var bossNode: BugAnimationNode
+//    lateinit var bossCardNode: BugAnimationNode
 
     val pointer = PointerDrawable()
     private var isTracking = false
@@ -37,12 +49,36 @@ class GameActivity : AppCompatActivity() {
             onUpdate()
         }
 
+        createBossRenderable()
         btn_start_game.setOnClickListener { startGame() }
     }
 
     private fun startGame() {
-        addObject(Uri.parse("boss.sfb"))
+
+        addBossToPlane()
         btn_start_game.visibility = View.GONE
+    }
+
+    private fun createBossRenderable() {
+        val bossFutureRenderable = ModelRenderable.builder().setSource(fragment.context, Uri.parse("boss.sfb")).build()
+        val bossCardFutureRenderable = ViewRenderable.builder().setView(this, R.layout.boss_card).build()
+
+        CompletableFuture.allOf(
+            bossFutureRenderable,
+            bossCardFutureRenderable
+        ).handle { _, throwable ->
+            if (throwable != null) {
+                Toast.makeText(this, "Unable to load renderabl", Toast.LENGTH_SHORT).show()
+                return@handle
+            }
+
+            try {
+                bossRenderable = bossFutureRenderable.get()
+                bossCardViewRenderable = bossCardFutureRenderable.get()
+            } catch (e: Exception) {
+                Toast.makeText(this, "createBossNode: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     /**
@@ -101,33 +137,27 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun addNodeToScene(fragment: ArFragment, anchor: Anchor, renderable: Renderable) {
+    private fun addNode(renderable: Renderable, parentNode: Node, offset: Vector3 = Vector3(0.2f, 0.2f, 0.2f)): BugAnimationNode {
+        val node = BugAnimationNode()
+        node.renderable = renderable
+//        node.localScale = offset
+        node.localPosition = offset
+        node.setParent(parentNode)
+        node.animateRotateCircle()
+        return node
+    }
+
+    private fun addNodeToScene(fragment: ArFragment, anchor: Anchor, renderable: Renderable): BugAnimationNode {
         val anchorNode = AnchorNode(anchor)
         val node = BugAnimationNode()
         node.renderable = renderable
-        node.localScale = Vector3(0.2f, 0.2f, 0.2f)
+        node.localScale = Vector3(0.3f, 0.3f, 0.3f)
         node.setParent(anchorNode)
         fragment.arSceneView.scene.addChild(anchorNode)
-
-//        node.select()
+        return node
     }
 
-    private fun placeObject(fragment: ArFragment, anchor: Anchor, model: Uri) {
-        val renderableFuture = ModelRenderable.builder()
-                .setSource(fragment.context, model)
-                .build()
-                .thenAccept { renderable -> addNodeToScene(fragment, anchor, renderable) }
-                .exceptionally { throwable ->
-                    val builder = AlertDialog.Builder(this)
-                    builder.setMessage(throwable.message)
-                            .setTitle("Codelab error!")
-                    val dialog = builder.create()
-                    dialog.show()
-                    null
-                }
-    }
-
-    private fun addObject(model: Uri) {
+    private fun addBossToPlane() {
         val frame = fragment.arSceneView.arFrame
         val pt = getScreenCenter()
         val hits: List<HitResult>
@@ -136,9 +166,8 @@ class GameActivity : AppCompatActivity() {
             for (hit in hits) {
                 val trackable = hit.trackable
                 if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
-                    placeObject(fragment, hit.createAnchor(), model)
-                    break
-
+                    val bossNode = addNodeToScene(fragment, hit.createAnchor(), bossRenderable)
+                    val bossCardNode = addNode(bossCardViewRenderable, bossNode, Vector3(0.0f, 2.0f, 0.0f))
                 }
             }
         }

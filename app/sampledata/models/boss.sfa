@@ -114,7 +114,7 @@
     file: 'sampledata/models/boss.obj',
     name: 'boss',
     recenter: 'root',
-    scale: 0.09621000000000001,
+    scale: 0.39621000000000001,
   },
   version: '0.52:1',
 }

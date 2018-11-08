@@ -43,14 +43,14 @@ class BugAnimationNode : Node() {
         return objectAnimator
     }
 
-    private fun createRotateAnimator(vararg quaternions: Quaternion): ObjectAnimator {
+    private fun createRotateAnimator(duration: Long = ROTATION_DURATION, repeat: Int = 0, vararg quaternions: Quaternion): ObjectAnimator {
         val objectAnimator: ObjectAnimator = ObjectAnimator()
         objectAnimator.apply {
             target = this@BugAnimationNode
-            duration = ROTATION_DURATION
+            this.duration = duration
             propertyName = "localRotation"  // TODO update
-            repeatCount = 0
-            repeatMode = ObjectAnimator.REVERSE
+            repeatCount = if (repeat == -1) ObjectAnimator.INFINITE else repeat
+            repeatMode = if (repeat == -1) ObjectAnimator.RESTART else ObjectAnimator.REVERSE
             interpolator = LinearInterpolator()
 
             setObjectValues(*quaternions)  // TODO update
@@ -222,6 +222,8 @@ class BugAnimationNode : Node() {
 
     fun animateRotate() {
         val animator = createRotateAnimator(
+                ROTATION_DURATION,
+                0,
                 Quaternion(Vector3(0.0F, 1.0F, 0.0F), 180F),
                 Quaternion(Vector3(0.0F, 1.0F, 0.0F), 0F),
                 Quaternion(Vector3(0.0F, 1.0F, 0.0F), -180F),
@@ -237,6 +239,18 @@ class BugAnimationNode : Node() {
 
             override fun onAnimationStart(animation: Animator?) {}
         })
+        animator.start()
+    }
+
+    fun animateRotateCircle() {
+        val animator = createRotateAnimator(
+            12000L,
+            -1,
+            Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0f),
+            Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 120f),
+            Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 240f),
+            Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 360f)
+        )
         animator.start()
     }
 
