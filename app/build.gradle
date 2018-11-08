@@ -71,3 +71,9 @@ sceneform.asset('sampledata/models/bug.obj',
         'default',
         'sampledata/models/bug.sfa',
         'src/main/assets/bug')
+
+
+sceneform.asset('sampledata/models/boss.obj',
+        'default',
+        'sampledata/models/boss.sfa',
+        'src/main/assets/boss')

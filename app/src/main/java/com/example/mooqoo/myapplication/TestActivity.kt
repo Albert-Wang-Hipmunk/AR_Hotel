@@ -48,6 +48,7 @@ class TestActivity : AppCompatActivity() {
     private fun setupBtn() {
         btn_toggle_main.setOnClickListener { startMainActivity() }
         btn_toggle_aug.setOnClickListener { startAugActivity() }
+        btn_toggle_game.setOnClickListener { startGameActivity() }
 
         btn_stand_pose.setOnClickListener { bugNode.animateIdle() }
         btn_random_translate.setOnClickListener { bugNode.animateRandomXYZ() }
@@ -57,6 +58,11 @@ class TestActivity : AppCompatActivity() {
         btn_front_back.setOnClickListener { bugNode.animateFlyFrontBack() }
     }
 
+    private fun startGameActivity() {
+        val intent = Intent(this, GameActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
