@@ -21,6 +21,9 @@ import com.google.ar.sceneform.ux.ArFragment
 import kotlinx.android.synthetic.main.activity_augmented_image.*
 import java.lang.Exception
 import java.util.HashMap
+import android.content.Intent
+
+
 
 
 class AugmentedImageActivity : AppCompatActivity() {
@@ -100,7 +103,9 @@ class AugmentedImageActivity : AppCompatActivity() {
     }
 
     private fun onHipmunkCardClicked() {
-        Toast.makeText(this, "hipmunk card is clicked!", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "hipmunk card is clicked!", Toast.LENGTH_SHORT).show()
+        val intent = packageManager.getLaunchIntentForPackage("com.hipmunk.android")
+        startActivity(intent)
     }
 
     private fun addNodeToScene(
