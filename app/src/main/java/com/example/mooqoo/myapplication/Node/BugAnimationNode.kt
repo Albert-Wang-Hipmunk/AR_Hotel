@@ -23,14 +23,14 @@ class BugAnimationNode : Node() {
     // TODO animation state
     var movementState: MOVEMENT = MOVEMENT.JUMP
 
-    private fun createFlyAnimator(vararg vectors: Vector3): ObjectAnimator {
+    private fun createFlyAnimator(duration: Long = ANIMATION_DURATION, repeat: Int = 5, vararg vectors: Vector3): ObjectAnimator {
         val objectAnimator: ObjectAnimator = ObjectAnimator()
 
         objectAnimator.apply {
             target = this@BugAnimationNode
-            duration = ANIMATION_DURATION
+            this.duration = duration
             propertyName = "localPosition"
-            repeatCount = 5 // ObjectAnimator.INFINITE
+            repeatCount = repeat // ObjectAnimator.INFINITE
             repeatMode = ObjectAnimator.REVERSE
             interpolator = LinearInterpolator()
 
@@ -143,7 +143,7 @@ class BugAnimationNode : Node() {
     fun animateFlyUpDown() {
         val start = Vector3(localPosition)
         val end = Vector3(localPosition).apply { y = +.3F }
-        val animator = createFlyAnimator(start, end)
+        val animator = createFlyAnimator(ANIMATION_DURATION, 5, start, end)
         animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
@@ -161,7 +161,7 @@ class BugAnimationNode : Node() {
         val second = Vector3(localPosition).apply { z -= 0.5F }
         val third = Vector3(localPosition).apply { z += 0.7F }
         val fourth = Vector3(localPosition).apply { z -= 0.2F }
-        val animator = createFlyAnimator(first, second, third, fourth)
+        val animator = createFlyAnimator(3000, 5, first, second, third, fourth)
         animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
@@ -175,19 +175,19 @@ class BugAnimationNode : Node() {
     }
 
     // --- rotational animation --- //
-    fun animateInfiniteIdle(activity: Activity, duration: Long = 500) {
-        val orientation1 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 180f)
-        val orientation2 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 210f)
-        val orientation3 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 180f)
-        val orientation4 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 150f)
-        val orientation5 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 180f)
+    fun animateInfiniteIdle(activity: Activity, rotationOffset: Float = 180F, duration: Long = 1000) {
+        val orientation1 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0 + rotationOffset)
+        val orientation2 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 30 + rotationOffset)
+        val orientation3 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0 + rotationOffset)
+        val orientation4 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), -30 + rotationOffset)
+        val orientation5 = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0 + rotationOffset)
         var orbitAnimation = createIdleAnimator(duration, 3, orientation1, orientation2, orientation3, orientation4, orientation5)
 
         orbitAnimation.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                Handler().postDelayed({ animateInfiniteIdle(activity)}, 2000)
+                Handler().postDelayed({ animateInfiniteIdle(activity, randomFloat(0f, 360f))}, 3000)
             }
 
             override fun onAnimationCancel(animation: Animator?) {}
@@ -254,7 +254,59 @@ class BugAnimationNode : Node() {
         animator.start()
     }
 
+    // --- boss movement --- //
+    fun bossAnimateUp(activity: Activity, duration: Long = 3000) {
+        val start = Vector3(localPosition)
+        val end = Vector3(localPosition).apply { y += 0.8F }
+        val animator = createFlyAnimator(duration, 0, start, end)
+        animator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
 
+            override fun onAnimationEnd(animation: Animator?) {
+                bossAnimateInfinitXYZ(activity, 3000)
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
+        animator.start()
+    }
+
+    fun bossAnimateInfinitXYZ(activity: Activity, duration: Long = 1000) {
+        val first = Vector3(localPosition)
+        val negRange = -0.4F
+        val posRange = 0.4F
+        val transition1 = Vector3(localPosition).apply {
+            x += randomFloat(negRange, posRange)
+            y += randomFloat(negRange, posRange)
+            z += randomFloat(negRange, posRange)
+        }
+        val transition2 = Vector3(localPosition).apply {
+            x += randomFloat(negRange, posRange)
+            y += randomFloat(negRange, posRange)
+            z += randomFloat(negRange, posRange)
+        }
+        val transition3 = Vector3(localPosition).apply {
+            x += randomFloat(negRange, posRange)
+            y += randomFloat(negRange, posRange)
+            z += randomFloat(negRange, posRange)
+        }
+
+        val animator = createRandomXYZAnimator(duration, 0, first, transition1, transition2, transition3)
+        animator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                bossAnimateInfinitXYZ(activity, 4000)
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
+        animator.start()
+    }
 //    private fun startAnimation() {
 //        if (animator != null) return
 //        low = Vector3(localPosition)

@@ -57,7 +57,7 @@
                 android:background="#00FF00" />
 
             <View
-                android:id="@+id/health_remain"
+                android:id="@+id/health_empty"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"

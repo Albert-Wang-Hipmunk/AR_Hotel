@@ -1,21 +1,22 @@
 package com.example.mooqoo.myapplication
 
+import android.app.ActionBar
 import android.graphics.Point
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.LinearLayout
 import android.widget.Toast
-import com.example.mooqoo.myapplication.Node.AnimationNode
 import com.example.mooqoo.myapplication.Node.BugAnimationNode
 import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.HitTestResult
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
@@ -32,6 +33,10 @@ class GameActivity : AppCompatActivity() {
 
     lateinit var bossRenderable: ModelRenderable
     lateinit var bossCardViewRenderable: ViewRenderable
+
+    var hitcount = 0
+    var bossLife = 10
+
 //    lateinit var bossNode: BugAnimationNode
 //    lateinit var bossCardNode: BugAnimationNode
 
@@ -54,8 +59,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun startGame() {
-
         addBossToPlane()
+        hitcount = 0
         btn_start_game.visibility = View.GONE
     }
 
@@ -143,7 +148,7 @@ class GameActivity : AppCompatActivity() {
 //        node.localScale = offset
         node.localPosition = offset
         node.setParent(parentNode)
-        node.animateRotateCircle()
+//        node.animateRotateCircle()
         return node
     }
 
@@ -167,9 +172,50 @@ class GameActivity : AppCompatActivity() {
                 val trackable = hit.trackable
                 if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
                     val bossNode = addNodeToScene(fragment, hit.createAnchor(), bossRenderable)
+                    bossNode.setOnTouchListener { hitTestResult, motionEvent -> handleTouchBoss(hitTestResult, motionEvent) }
+                    bossNode.animateInfiniteIdle(this, 0F)
+                    bossNode.bossAnimateUp(this, 5000L)
                     val bossCardNode = addNode(bossCardViewRenderable, bossNode, Vector3(0.0f, 2.0f, 0.0f))
                 }
             }
         }
+    }
+
+    private fun handleTouchBoss(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {
+        when(motionEvent.action) {
+//            MotionEvent.ACTION_BUTTON_RELEASE -> { Log.d("TESTT", "motion event = ACTION_BUTTON_RELEASE") }
+            MotionEvent.ACTION_DOWN -> {
+//                Log.d("TESTT", "motion event = ACTION_DOWN")
+//                val node = hitTestResult.node
+//                Log.d("TESTT", "node.name=${node.name}, node(parent)=${node.parent.name}")
+            }
+            MotionEvent.ACTION_UP -> {
+                Log.d("TESTT", "motion event = ACTION_UP")
+                val node = hitTestResult.node
+                if (node == null) return true
+
+                Log.d("TESTT", "update view... ... ...")
+
+                // TODO change color
+                hitcount++
+                if (hitcount >= bossLife) {
+                    node.setParent(null)
+                    gameEnd()
+                }
+
+                // update hp
+                bossCardViewRenderable.view.findViewById<View>(R.id.health_hp).layoutParams =
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, (bossLife - hitcount).toFloat())
+                bossCardViewRenderable.view.findViewById<View>(R.id.health_empty).layoutParams =
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, hitcount.toFloat())
+            }
+        }
+        return true
+    }
+
+    private fun gameEnd() {
+        btn_start_game.visibility = View.VISIBLE
+        hitcount = 0
+        bossLife += 5
     }
 }
