@@ -1,6 +1,5 @@
 package com.example.mooqoo.myapplication
 
-import android.app.ActionBar
 import android.graphics.Point
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
@@ -31,8 +30,11 @@ class GameActivity : AppCompatActivity() {
 
     lateinit var fragment: ArFragment
 
+    lateinit var treasureRenderable: ModelRenderable
     lateinit var bossRenderable: ModelRenderable
     lateinit var bossCardViewRenderable: ViewRenderable
+
+    var anchorNode: AnchorNode? = null
 
     var hitcount = 0
     var bossLife = 10
@@ -54,21 +56,24 @@ class GameActivity : AppCompatActivity() {
             onUpdate()
         }
 
-        createBossRenderable()
+        createGameRenderable()
         btn_start_game.setOnClickListener { startGame() }
     }
 
     private fun startGame() {
+        anchorNode?.setParent(null)
         addBossToPlane()
         hitcount = 0
         btn_start_game.visibility = View.GONE
     }
 
-    private fun createBossRenderable() {
+    private fun createGameRenderable() {
+        val treasureFutureRenderable = ModelRenderable.builder().setSource(fragment.context, Uri.parse("treasure.sfb")).build()
         val bossFutureRenderable = ModelRenderable.builder().setSource(fragment.context, Uri.parse("boss.sfb")).build()
         val bossCardFutureRenderable = ViewRenderable.builder().setView(this, R.layout.boss_card).build()
 
         CompletableFuture.allOf(
+            treasureFutureRenderable,
             bossFutureRenderable,
             bossCardFutureRenderable
         ).handle { _, throwable ->
@@ -78,6 +83,7 @@ class GameActivity : AppCompatActivity() {
             }
 
             try {
+                treasureRenderable = treasureFutureRenderable.get()
                 bossRenderable = bossFutureRenderable.get()
                 bossCardViewRenderable = bossCardFutureRenderable.get()
             } catch (e: Exception) {
@@ -142,18 +148,22 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun addNode(renderable: Renderable, parentNode: Node, offset: Vector3 = Vector3(0.2f, 0.2f, 0.2f)): BugAnimationNode {
+    private fun addNode(
+            renderable: Renderable,
+            parentNode: Node,
+            offset: Vector3 = Vector3(0.2f, 0.2f, 0.2f),
+            scale: Vector3? = null
+    ): BugAnimationNode {
         val node = BugAnimationNode()
         node.renderable = renderable
-//        node.localScale = offset
+        if (scale != null) node.localScale = scale
         node.localPosition = offset
         node.setParent(parentNode)
-//        node.animateRotateCircle()
         return node
     }
 
     private fun addNodeToScene(fragment: ArFragment, anchor: Anchor, renderable: Renderable): BugAnimationNode {
-        val anchorNode = AnchorNode(anchor)
+        anchorNode = AnchorNode(anchor)
         val node = BugAnimationNode()
         node.renderable = renderable
         node.localScale = Vector3(0.3f, 0.3f, 0.3f)
@@ -196,9 +206,13 @@ class GameActivity : AppCompatActivity() {
 
                 Log.d("TESTT", "update view... ... ...")
 
+                //
                 // TODO change color
                 hitcount++
                 if (hitcount >= bossLife) {
+                    node.localPosition
+                    val treasureNode = addNode(treasureRenderable, anchorNode as Node, node.localPosition, Vector3(0.5f, 0.5f, 0.5f))
+                    treasureNode.animateRotateCircle()
                     node.setParent(null)
                     gameEnd()
                 }

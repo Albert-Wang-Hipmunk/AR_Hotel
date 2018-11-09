@@ -77,3 +77,8 @@ sceneform.asset('sampledata/models/boss.obj',
         'default',
         'sampledata/models/boss.sfa',
         'src/main/assets/boss')
+
+sceneform.asset('sampledata/models/treasure.obj',
+        'default',
+        'sampledata/models/treasure.sfa',
+        'src/main/assets/treasure')
