@@ -14,6 +14,8 @@ import java.lang.Exception
 
 class AugmentedImageFragment : ArFragment() {
 
+    val IMAGE_DB_NAME = "myimages.imgdb" // "hipmunk.imgdb"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -37,7 +39,7 @@ class AugmentedImageFragment : ArFragment() {
 
     private fun setupAugmentedImageDatabase(config: Config, session: Session): Boolean {
         try {
-            val inputStream = context!!.assets.open("hipmunk.imgdb")
+            val inputStream = context!!.assets.open(IMAGE_DB_NAME)
             val imageDatabase = AugmentedImageDatabase.deserialize(session, inputStream)
 
             config.augmentedImageDatabase = imageDatabase
