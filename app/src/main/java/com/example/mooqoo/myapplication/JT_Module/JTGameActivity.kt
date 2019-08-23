@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.activity_game.view_content
 import kotlinx.android.synthetic.main.activity_jt_game.*
 import java.lang.Exception
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class JTGameActivity : AppCompatActivity() {
@@ -39,6 +40,8 @@ class JTGameActivity : AppCompatActivity() {
     lateinit var fragment: WritingArFragment
 
     lateinit var jtImageViewRenderable: ViewRenderable
+    lateinit var jtImageViewRenderable2: ViewRenderable
+    lateinit var jtImageViewRenderable3: ViewRenderable
 
     var anchorNode: AnchorNode? = null
 
@@ -75,7 +78,7 @@ class JTGameActivity : AppCompatActivity() {
     private fun setupBtnClick() {
         btn_1.setOnClickListener { addJTToPlane() }
         btn_record.setOnClickListener { toggleRecording() }
-        btn_3.setOnClickListener { resetAllJT() }
+        btn_3.setOnClickListener { recreate() }
     }
 
     private fun toggleRecording() {
@@ -109,9 +112,7 @@ class JTGameActivity : AppCompatActivity() {
     }
 
     private fun resetAllJT() {
-        fragment.arSceneView.scene.children?.forEach {
-            fragment.arSceneView.scene.removeChild(it)
-        }
+        recreate()
     }
 
     private fun addJTToPlane() {
@@ -123,8 +124,10 @@ class JTGameActivity : AppCompatActivity() {
             for (hit in hits) {
                 val trackable = hit.trackable
                 if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
-                    val randomScale = Vector3(randomNumScaleTo(0.3), randomNumScaleTo(0.3), randomNumScaleTo(0.3))
-                    val jtNode = addNodeToScene(fragment, hit.createAnchor(), jtImageViewRenderable, randomScale)
+                    val scaleAmount = randomNumScaleTo(0.3)
+                    val randomScale = Vector3(scaleAmount, scaleAmount, scaleAmount)
+                    val randomRenderable = getRandomJTRenderable()
+                    val jtNode = addNodeToScene(fragment, hit.createAnchor(), randomRenderable, randomScale)
                     jtNode.animateInfiniteIdle(this, 0F)
                     jtNode.bossAnimateUp(this, 5000L)
                 }
@@ -132,13 +135,27 @@ class JTGameActivity : AppCompatActivity() {
         }
     }
 
+    private fun getRandomJTRenderable(): ViewRenderable {
+        return when((0..2).random()) {
+            0 -> jtImageViewRenderable
+            1 -> jtImageViewRenderable2
+            2 -> jtImageViewRenderable3
+            else -> jtImageViewRenderable
+        }
+//        return jtImageViewRenderable
+    }
     private fun randomNumScaleTo(scale: Double = 1.0): Float =  (Math.random() * scale).toFloat()
 
     private fun createGameRenderable() {
+        // TODO
         val jtFutureRenderable = ViewRenderable.builder().setView(this, R.layout.jt_imageview).build()
+        val jtFutureRenderable2 = ViewRenderable.builder().setView(this, R.layout.jt_imageview2).build()
+        val jtFutureRenderable3 = ViewRenderable.builder().setView(this, R.layout.jt_imageview3).build()
 
         CompletableFuture.allOf(
-                jtFutureRenderable
+                jtFutureRenderable,
+                jtFutureRenderable2,
+                jtFutureRenderable3
         ).handle { _, throwable ->
             if (throwable != null) {
                 Toast.makeText(this, "Unable to load renderabl", Toast.LENGTH_SHORT).show()
@@ -147,6 +164,8 @@ class JTGameActivity : AppCompatActivity() {
 
             try {
                 jtImageViewRenderable = jtFutureRenderable.get()
+                jtImageViewRenderable2 = jtFutureRenderable2.get()
+                jtImageViewRenderable3 = jtFutureRenderable3.get()
             } catch (e: Exception) {
                 Toast.makeText(this, "createBossNode: ${e.message}", Toast.LENGTH_SHORT).show()
             }
