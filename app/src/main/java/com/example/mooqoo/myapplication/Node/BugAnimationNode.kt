@@ -19,6 +19,8 @@ class BugAnimationNode : Node() {
     private val ROTATION_DURATION = 4000L
     private val ORBIT_DURATION = 8000L
 
+    private val SLOW_RATIO = 2L
+
 //    var animator: ObjectAnimator? = null
     // TODO animation state
     var movementState: MOVEMENT = MOVEMENT.JUMP
@@ -257,13 +259,13 @@ class BugAnimationNode : Node() {
     // --- boss movement --- //
     fun bossAnimateUp(activity: Activity, duration: Long = 3000) {
         val start = Vector3(localPosition)
-        val end = Vector3(localPosition).apply { y += 0.8F }
+        val end = Vector3(localPosition).apply { y += 0.6F }
         val animator = createFlyAnimator(duration, 0, start, end)
         animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                bossAnimateInfinitXYZ(activity, 3000)
+                bossAnimateInfinitXYZ(activity, 3000 * SLOW_RATIO)
             }
 
             override fun onAnimationCancel(animation: Animator?) {}
@@ -298,7 +300,7 @@ class BugAnimationNode : Node() {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                bossAnimateInfinitXYZ(activity, 4000)
+                bossAnimateInfinitXYZ(activity, 4000 * SLOW_RATIO)
             }
 
             override fun onAnimationCancel(animation: Animator?) {}

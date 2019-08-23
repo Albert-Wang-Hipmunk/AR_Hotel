@@ -1,4 +1,4 @@
-package com.example.mooqoo.myapplication
+package com.example.mooqoo.myapplication.JT_Module
 
 import android.graphics.Canvas
 import android.graphics.Color

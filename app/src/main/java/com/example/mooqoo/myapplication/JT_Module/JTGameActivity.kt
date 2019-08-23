@@ -3,36 +3,25 @@ package com.example.mooqoo.myapplication.JT_Module
 import android.content.ContentValues
 import android.graphics.Point
 import android.media.CamcorderProfile
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.mooqoo.myapplication.Node.BugAnimationNode
-import com.example.mooqoo.myapplication.PointerDrawable
 import com.example.mooqoo.myapplication.R
 import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.HitTestResult
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.samples.videorecording.WritingArFragment
 import com.google.ar.sceneform.ux.ArFragment
-import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.activity_game.view_content
 import kotlinx.android.synthetic.main.activity_jt_game.*
 import java.lang.Exception
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class JTGameActivity : AppCompatActivity() {
@@ -68,7 +57,7 @@ class JTGameActivity : AppCompatActivity() {
     }
 
     private fun initRecorder() {
-        // Initialize the VideoRecorder.
+        // Initialize the VideoRecorder
         videoRecorder = VideoRecorder()
         val orientation = resources.configuration.orientation
         videoRecorder?.setVideoQuality(CamcorderProfile.QUALITY_2160P, orientation)
@@ -109,10 +98,6 @@ class JTGameActivity : AppCompatActivity() {
             values.put(MediaStore.Video.Media.DATA, videoPath)
             contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
         }
-    }
-
-    private fun resetAllJT() {
-        recreate()
     }
 
     private fun addJTToPlane() {
@@ -227,21 +212,6 @@ class JTGameActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun addNodeToParent(
-            renderable: Renderable,
-            parentNode: Node,
-            offset: Vector3 = Vector3(0.2f, 0.2f, 0.2f),
-            scale: Vector3? = null
-    ): BugAnimationNode {
-        val node = BugAnimationNode()
-        node.renderable = renderable
-        if (scale != null) node.localScale = scale
-        node.localPosition = offset
-        node.setParent(parentNode)
-        return node
-    }
-
 
     private fun addNodeToScene(fragment: ArFragment, anchor: Anchor, renderable: Renderable, scale: Vector3 = Vector3(0.3f, 0.3f, 0.3f)): BugAnimationNode {
         anchorNode = AnchorNode(anchor)

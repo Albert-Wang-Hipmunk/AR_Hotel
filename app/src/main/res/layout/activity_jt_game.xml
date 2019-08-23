@@ -5,7 +5,7 @@
     android:id="@+id/view_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameActivity">
+    tools:context=".JT_Module.JTGameActivity">
 
     <fragment
         android:id="@+id/sceneform_jt_game_fragment"
