@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/sceneform_jt_game_fragment"
-        android:name="com.google.ar.sceneform.ux.ArFragment"
+        class="com.google.ar.sceneform.samples.videorecording.WritingArFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="238dp"
@@ -23,16 +23,21 @@
         android:layout_marginBottom="8dp"
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_2"
+        app:layout_constraintEnd_toStartOf="@+id/btn_record"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/sceneform_jt_game_fragment"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btn_2"
-        android:layout_width="0dp"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_record"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
         android:text="Button"
+        app:backgroundTint="@color/colorAccent"
+        app:elevation="2dp"
+        app:srcCompat="@drawable/round_videocam"
         app:layout_constraintBottom_toBottomOf="@+id/btn_1"
         app:layout_constraintEnd_toStartOf="@+id/btn_3"
         app:layout_constraintHorizontal_bias="0.5"
@@ -43,10 +48,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Button"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_2"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_record"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_2" />
+        app:layout_constraintStart_toEndOf="@+id/btn_record" />
 
     <TextView
         android:id="@+id/tv_title"

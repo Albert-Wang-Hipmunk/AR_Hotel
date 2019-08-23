@@ -88,10 +88,10 @@ class AugmentedImageActivity : AppCompatActivity() {
 
     fun onUpdateFrame(frameTime: FrameTime) {
         val frame = arFragment.arSceneView.arFrame
-        val updatedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage::class.java)
+        val updatedAugmentedImages = frame?.getUpdatedTrackables(AugmentedImage::class.java)
 
 
-        updatedAugmentedImages.forEach { augmentedImage ->
+        updatedAugmentedImages?.forEach { augmentedImage ->
             when (augmentedImage.trackingState) {
                 TrackingState.PAUSED -> {
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,

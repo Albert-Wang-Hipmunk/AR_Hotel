@@ -53,13 +53,13 @@ class AnimationNode(transformationSystem: TransformationSystem) : TransformableN
             MotionEvent.ACTION_DOWN -> {
                 Log.d("TESTT", "motion event = ACTION_DOWN")
                 val node = hitTestReseult.node
-                Log.d("TESTT", "node.name=${node.name}, node(parent)=${node.parent.name}")
+                Log.d("TESTT", "node.name=${node?.name}, node(parent)=${node?.parent?.name}")
             }
             MotionEvent.ACTION_UP -> {
                 Log.d("TESTT", "motion event = ACTION_UP")
                 val node = hitTestReseult.node
-                Log.d("TESTT", "node.name=${node.name}, node(parent)=${node.parent.name}")
-                node.setParent(null)
+                Log.d("TESTT", "node.name=${node?.name}, node(parent)=${node?.parent?.name}")
+                node?.setParent(null)
             }
         }
         Log.d("TESTT", "onTouchEvent: motionEvent=$motionEvent, hitTestReseult=$hitTestReseult")
