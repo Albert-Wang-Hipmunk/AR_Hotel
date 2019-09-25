@@ -39,10 +39,6 @@ class JTGameActivity : AppCompatActivity() {
     )
     val imageViewRenderables = mutableListOf<ViewRenderable>()
 
-//    lateinit var jtImageViewRenderable: ViewRenderable
-//    lateinit var jtImageViewRenderable2: ViewRenderable
-//    lateinit var jtImageViewRenderable3: ViewRenderable
-
     var anchorNode: AnchorNode? = null
 
     val pointer = PointerDrawable()
@@ -65,9 +61,8 @@ class JTGameActivity : AppCompatActivity() {
             onUpdate()
         }
 
-//
         createGameRenderable()
-//
+
         initPhotoGallery()
         initRecorder()
         setupBtnClick()
@@ -128,8 +123,6 @@ class JTGameActivity : AppCompatActivity() {
         }
     }
 
-    // TODO add DomToPlane
-    // imageViewRenderables
     private fun addDomToPlane(viewRenderable: ViewRenderable?) {
         if (viewRenderable == null) return
 
@@ -151,17 +144,6 @@ class JTGameActivity : AppCompatActivity() {
         }
     }
 
-    // TODO use click to get the correct Renderable
-//    private fun getRandomJTRenderable(): ViewRenderable {
-//        return when((0..2).random()) {
-//            0 -> jtImageViewRenderable
-//            1 -> jtImageViewRenderable2
-//            2 -> jtImageViewRenderable3
-//            else -> jtImageViewRenderable
-//        }
-////        return jtImageViewRenderable
-//    }
-
     private fun randomNumScaleTo(scale: Double = 1.0): Float =  (Math.random() * scale).toFloat()
 
     private fun createGameRenderable() {
@@ -172,10 +154,7 @@ class JTGameActivity : AppCompatActivity() {
             futureRenderables.add(ViewRenderable.builder().setView(this, imageView).build())
         }
 
-        // TODO create domFutureRenderable
-//        val jtFutureRenderable = ViewRenderable.builder().setView(this, R.layout.jt_imageview).build()
-//        val jtFutureRenderable2 = ViewRenderable.builder().setView(this, R.layout.jt_imageview2).build()
-//        val jtFutureRenderable3 = ViewRenderable.builder().setView(this, R.layout.jt_imageview3).build()
+
         CompletableFuture.allOf(*futureRenderables.toTypedArray()).handle { _, throwable ->
             if (throwable != null) {
                 Toast.makeText(this, "Unable to load futureRenderable", Toast.LENGTH_SHORT).show()
@@ -183,32 +162,10 @@ class JTGameActivity : AppCompatActivity() {
             }
             try {
                 futureRenderables.forEach { imageViewRenderables.add(it.get()) }
-//                jtImageViewRenderable = jtFutureRenderable.get()
-//                jtImageViewRenderable2 = jtFutureRenderable2.get()
-//                jtImageViewRenderable3 = jtFutureRenderable3.get()
             } catch (e: Exception) {
                 Toast.makeText(this, "futureRenderables create failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
-//        CompletableFuture.allOf(
-//                jtFutureRenderable,
-//                jtFutureRenderable2,
-//                jtFutureRenderable3
-//        ).handle { _, throwable ->
-//            if (throwable != null) {
-//                Toast.makeText(this, "Unable to load renderabl", Toast.LENGTH_SHORT).show()
-//                return@handle
-//            }
-//
-//            // TODO create dom renderable
-//            try {
-//                jtImageViewRenderable = jtFutureRenderable.get()
-//                jtImageViewRenderable2 = jtFutureRenderable2.get()
-//                jtImageViewRenderable3 = jtFutureRenderable3.get()
-//            } catch (e: Exception) {
-//                Toast.makeText(this, "createBossNode: ${e.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        }
     }
 
     /**
@@ -245,7 +202,6 @@ class JTGameActivity : AppCompatActivity() {
                 }
             }
         }
-
         return wasHitting != isHitting
     }
 
