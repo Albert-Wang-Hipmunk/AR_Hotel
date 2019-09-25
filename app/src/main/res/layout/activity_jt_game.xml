@@ -52,17 +52,14 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btn_record" />
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:text="Happy Birthday JT"
-        android:textSize="36sp"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:background="#99000000"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_photo_gallery"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:background="#44000000"
+        android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/sceneform_jt_game_fragment"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/sceneform_jt_game_fragment" />
 
 </android.support.constraint.ConstraintLayout>

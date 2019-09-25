@@ -6,8 +6,12 @@ import android.media.CamcorderProfile
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
+import com.example.mooqoo.myapplication.JT_Module.photo_gallery.PhotoAdapter
 import com.example.mooqoo.myapplication.Node.BugAnimationNode
 import com.example.mooqoo.myapplication.R
 import com.google.ar.core.Anchor
@@ -28,9 +32,16 @@ class JTGameActivity : AppCompatActivity() {
     val TAG = "JTGameActivity"
     lateinit var fragment: WritingArFragment
 
-    lateinit var jtImageViewRenderable: ViewRenderable
-    lateinit var jtImageViewRenderable2: ViewRenderable
-    lateinit var jtImageViewRenderable3: ViewRenderable
+    val photoResources = listOf(
+            R.drawable.jt_iv_1, R.drawable.jt_iv_2, R.drawable.jt_iv_3,
+            R.drawable.jt_iv_1, R.drawable.jt_iv_2, R.drawable.jt_iv_3,
+            R.drawable.jt_iv_1, R.drawable.jt_iv_2, R.drawable.jt_iv_3
+    )
+    val imageViewRenderables = mutableListOf<ViewRenderable>()
+
+//    lateinit var jtImageViewRenderable: ViewRenderable
+//    lateinit var jtImageViewRenderable2: ViewRenderable
+//    lateinit var jtImageViewRenderable3: ViewRenderable
 
     var anchorNode: AnchorNode? = null
 
@@ -39,6 +50,10 @@ class JTGameActivity : AppCompatActivity() {
     private var isHitting = false
 
     private var videoRecorder: VideoRecorder? = null
+
+    interface PhotoClickListener {
+        fun onItemClick(view: View, position: Int)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +64,24 @@ class JTGameActivity : AppCompatActivity() {
             fragment.onUpdate(frameTime)
             onUpdate()
         }
+
 //
         createGameRenderable()
 //
+        initPhotoGallery()
         initRecorder()
         setupBtnClick()
+    }
+
+    private fun initPhotoGallery() {
+        val photoClickListener: PhotoClickListener = object : PhotoClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                // TODO
+                addDomToPlane(imageViewRenderables[position])
+            }
+        }
+        rv_photo_gallery.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rv_photo_gallery.adapter = PhotoAdapter(photoResources, this, photoClickListener)
     }
 
     private fun initRecorder() {
@@ -65,7 +93,7 @@ class JTGameActivity : AppCompatActivity() {
     }
 
     private fun setupBtnClick() {
-        btn_1.setOnClickListener { addJTToPlane() }
+        btn_1.setOnClickListener { addDomToPlane(imageViewRenderables[0]) }
         btn_record.setOnClickListener { toggleRecording() }
         btn_3.setOnClickListener { recreate() }
     }
@@ -100,7 +128,11 @@ class JTGameActivity : AppCompatActivity() {
         }
     }
 
-    private fun addJTToPlane() {
+    // TODO add DomToPlane
+    // imageViewRenderables
+    private fun addDomToPlane(viewRenderable: ViewRenderable?) {
+        if (viewRenderable == null) return
+
         val frame = fragment.arSceneView.arFrame
         val pt = getScreenCenter()
         val hits: List<HitResult>
@@ -111,8 +143,7 @@ class JTGameActivity : AppCompatActivity() {
                 if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
                     val scaleAmount = randomNumScaleTo(0.3)
                     val randomScale = Vector3(scaleAmount, scaleAmount, scaleAmount)
-                    val randomRenderable = getRandomJTRenderable()
-                    val jtNode = addNodeToScene(fragment, hit.createAnchor(), randomRenderable, randomScale)
+                    val jtNode = addNodeToScene(fragment, hit.createAnchor(), viewRenderable, randomScale)
                     jtNode.animateInfiniteIdle(this, 0F)
                     jtNode.bossAnimateUp(this, 5000L)
                 }
@@ -120,41 +151,64 @@ class JTGameActivity : AppCompatActivity() {
         }
     }
 
-    private fun getRandomJTRenderable(): ViewRenderable {
-        return when((0..2).random()) {
-            0 -> jtImageViewRenderable
-            1 -> jtImageViewRenderable2
-            2 -> jtImageViewRenderable3
-            else -> jtImageViewRenderable
-        }
-//        return jtImageViewRenderable
-    }
+    // TODO use click to get the correct Renderable
+//    private fun getRandomJTRenderable(): ViewRenderable {
+//        return when((0..2).random()) {
+//            0 -> jtImageViewRenderable
+//            1 -> jtImageViewRenderable2
+//            2 -> jtImageViewRenderable3
+//            else -> jtImageViewRenderable
+//        }
+////        return jtImageViewRenderable
+//    }
+
     private fun randomNumScaleTo(scale: Double = 1.0): Float =  (Math.random() * scale).toFloat()
 
     private fun createGameRenderable() {
-        // TODO
-        val jtFutureRenderable = ViewRenderable.builder().setView(this, R.layout.jt_imageview).build()
-        val jtFutureRenderable2 = ViewRenderable.builder().setView(this, R.layout.jt_imageview2).build()
-        val jtFutureRenderable3 = ViewRenderable.builder().setView(this, R.layout.jt_imageview3).build()
+        val futureRenderables = mutableListOf<CompletableFuture<ViewRenderable>>()
+        photoResources.forEach {
+            val imageView = ImageView(this)
+            imageView.setImageResource(it)
+            futureRenderables.add(ViewRenderable.builder().setView(this, imageView).build())
+        }
 
-        CompletableFuture.allOf(
-                jtFutureRenderable,
-                jtFutureRenderable2,
-                jtFutureRenderable3
-        ).handle { _, throwable ->
+        // TODO create domFutureRenderable
+//        val jtFutureRenderable = ViewRenderable.builder().setView(this, R.layout.jt_imageview).build()
+//        val jtFutureRenderable2 = ViewRenderable.builder().setView(this, R.layout.jt_imageview2).build()
+//        val jtFutureRenderable3 = ViewRenderable.builder().setView(this, R.layout.jt_imageview3).build()
+        CompletableFuture.allOf(*futureRenderables.toTypedArray()).handle { _, throwable ->
             if (throwable != null) {
-                Toast.makeText(this, "Unable to load renderabl", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Unable to load futureRenderable", Toast.LENGTH_SHORT).show()
                 return@handle
             }
-
             try {
-                jtImageViewRenderable = jtFutureRenderable.get()
-                jtImageViewRenderable2 = jtFutureRenderable2.get()
-                jtImageViewRenderable3 = jtFutureRenderable3.get()
+                futureRenderables.forEach { imageViewRenderables.add(it.get()) }
+//                jtImageViewRenderable = jtFutureRenderable.get()
+//                jtImageViewRenderable2 = jtFutureRenderable2.get()
+//                jtImageViewRenderable3 = jtFutureRenderable3.get()
             } catch (e: Exception) {
-                Toast.makeText(this, "createBossNode: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "futureRenderables create failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
+//        CompletableFuture.allOf(
+//                jtFutureRenderable,
+//                jtFutureRenderable2,
+//                jtFutureRenderable3
+//        ).handle { _, throwable ->
+//            if (throwable != null) {
+//                Toast.makeText(this, "Unable to load renderabl", Toast.LENGTH_SHORT).show()
+//                return@handle
+//            }
+//
+//            // TODO create dom renderable
+//            try {
+//                jtImageViewRenderable = jtFutureRenderable.get()
+//                jtImageViewRenderable2 = jtFutureRenderable2.get()
+//                jtImageViewRenderable3 = jtFutureRenderable3.get()
+//            } catch (e: Exception) {
+//                Toast.makeText(this, "createBossNode: ${e.message}", Toast.LENGTH_SHORT).show()
+//            }
+//        }
     }
 
     /**
